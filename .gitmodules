@@ -1,0 +1,3 @@
+[submodule "coronavirus-restapi"]
+	path = coronavirus-restapi
+	url = https://github.com/didinj/coronavirus-restapi
