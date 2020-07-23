@@ -11,5 +11,6 @@ ng3:
 	cd coronavirus-cases && ng g component cases-stat
 ng4:
 	cd coronavirus-cases && ng g service api
-
+ng5:
+	cd coronavirus-cases && ng add @angular/material
 

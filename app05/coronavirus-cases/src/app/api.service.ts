@@ -34,9 +34,10 @@ export class ApiService {
   }
   getCasesById(id: string): Observable<Cases> {
     const url = `${apiUrl}/${id}`;
-    return this.http.<Cases>(url).pipe(
+    return this.http.get<Cases>(url)
+    .pipe(
       tap( _ => console.log(`fetched cases id=${id}`) ),
-      catchError(this.handleError(`getCasesById id=${id}`))
+      catchError(this.handleError<Cases>(`getCasesById id=${id}`))
     );
   }
   addCases(cases: Cases): Observable<Cases>{
