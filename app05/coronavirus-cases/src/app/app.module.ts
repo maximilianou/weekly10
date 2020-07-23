@@ -26,6 +26,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -52,9 +53,11 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
+    MatSliderModule,
     MatSlideToggleModule,
     MatButtonToggleModule,
     MatSelectModule,
+    ChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -13,4 +13,6 @@ ng4:
 	cd coronavirus-cases && ng g service api
 ng5:
 	cd coronavirus-cases && ng add @angular/material
-
+ng6:
+	cd coronavirus-cases && npm i --save ng2-charts chart.js
+	
