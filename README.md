@@ -11,24 +11,10 @@ ng3:
 	cd coronavirus-cases && ng g component add-cases
 	cd coronavirus-cases && ng g component edit-cases
 	cd coronavirus-cases && ng g component cases-stat
+ng4:
+	cd coronavirus-cases && ng g service api
 
 
-
-```
-### ../../../app05/coronavirus-cases/src/main.ts 
-```
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
 
 ```
 ### ../../../app05/coronavirus-cases/src/index.html 
@@ -48,10 +34,29 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 </html>
 
 ```
+### ../../../app05/coronavirus-cases/src/main.ts 
+```
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+```
 ### ../../../app05/coronavirus-cases/src/app/app.module.ts 
 ```
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -72,7 +77,10 @@ import { CasesStatComponent } from './cases-stat/cases-stat.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -277,8 +285,37 @@ export class CasesStatComponent implements OnInit {
 <p>cases-stat works!</p>
 
 ```
-### ../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.html 
+### ../../../app05/coronavirus-cases/src/app/cases.ts 
 ```
-<p>cases-stat works!</p>
+export class Cases{
+    _id: string;
+    name: string;
+    gender: string;
+    age: number;
+    address: string;
+    city: string;
+    country: string;
+    status: string;
+    updated: Date;
+};
+```
+### ../../../app05/coronavirus-cases/src/app/statistic.ts 
+```
+export class Statitistic {
+    _id: any;
+    count: number;
+}
+```
+### ../../../app05/coronavirus-cases/src/app/api.service.ts 
+```
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+
+  constructor() { }
+}
 
 ```

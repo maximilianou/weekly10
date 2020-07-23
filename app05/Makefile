@@ -9,5 +9,7 @@ ng3:
 	cd coronavirus-cases && ng g component add-cases
 	cd coronavirus-cases && ng g component edit-cases
 	cd coronavirus-cases && ng g component cases-stat
+ng4:
+	cd coronavirus-cases && ng g service api
 
 

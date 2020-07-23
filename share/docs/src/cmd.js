@@ -68,7 +68,15 @@ const filesIn = [
     mark: '\n```\n',
   },
   {
-    path: '../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.html',
+    path: '../../../app05/coronavirus-cases/src/app/cases.ts',
+    mark: '\n```\n',
+  },
+  {
+    path: '../../../app05/coronavirus-cases/src/app/statistic.ts',
+    mark: '\n```\n',
+  },
+  {
+    path: '../../../app05/coronavirus-cases/src/app/api.service.ts',
     mark: '\n```\n',
   },
 ];
@@ -81,14 +89,6 @@ const publish = (cmd) => {
   });
 };
 
-/*
-const publish = async () => {
-  await remove({ fileOut });
-  await Promise.all(fileIn.map(async (file) => {
-    await append({ fileIn: file, fileOut, mark: '```' });
-  }));
-};
-*/
 publish({ fileOut, filesIn });
 
 console.log('created README.md');
