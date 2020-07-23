@@ -112,3 +112,123 @@ const routes: Routes = [];
 export class AppRoutingModule { }
 
 ```
+### ../../../app05/coronavirus-cases/src/app/cases/cases.component.ts 
+```
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-cases',
+  templateUrl: './cases.component.html',
+  styleUrls: ['./cases.component.css']
+})
+export class CasesComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+### ../../../app05/coronavirus-cases/src/app/cases/cases.component.html 
+```
+<p>cases works!</p>
+
+```
+### ../../../app05/coronavirus-cases/src/app/add-cases/add-cases.component.ts 
+```
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-add-cases',
+  templateUrl: './add-cases.component.html',
+  styleUrls: ['./add-cases.component.css']
+})
+export class AddCasesComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+### ../../../app05/coronavirus-cases/src/app/add-cases/add-cases.component.html 
+```
+<p>add-cases works!</p>
+
+```
+### ../../../app05/coronavirus-cases/src/app/edit-cases/edit-cases.component.ts 
+```
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-edit-cases',
+  templateUrl: './edit-cases.component.html',
+  styleUrls: ['./edit-cases.component.css']
+})
+export class EditCasesComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+### ../../../app05/coronavirus-cases/src/app/edit-cases/edit-cases.component.html 
+```
+<p>edit-cases works!</p>
+
+```
+### ../../../app05/coronavirus-cases/src/app/cases-details/cases-details.component.ts 
+```
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-cases-details',
+  templateUrl: './cases-details.component.html',
+  styleUrls: ['./cases-details.component.css']
+})
+export class CasesDetailsComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+### ../../../app05/coronavirus-cases/src/app/cases-details/cases-details.component.html 
+```
+<p>cases-details works!</p>
+
+```
+### ../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.ts 
+```
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-cases-stat',
+  templateUrl: './cases-stat.component.html',
+  styleUrls: ['./cases-stat.component.css']
+})
+export class CasesStatComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+### ../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.html 
+```
+<p>cases-stat works!</p>
+
+```
