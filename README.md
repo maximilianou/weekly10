@@ -15,6 +15,22 @@ ng3:
 
 
 ```
+### ../../../app05/coronavirus-cases/src/main.ts 
+```
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+```
 ### ../../../app05/coronavirus-cases/src/index.html 
 ```
 <!doctype html>
@@ -30,22 +46,6 @@ ng3:
   <app-root></app-root>
 </body>
 </html>
-
-```
-### ../../../app05/coronavirus-cases/src/main.ts 
-```
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
 
 ```
 ### ../../../app05/coronavirus-cases/src/app/app.module.ts 
@@ -96,14 +96,59 @@ export class AppComponent {
 ```
 ### ../../../app05/coronavirus-cases/src/app/app.component.html 
 ```
-<h2>carola y el virus</h2>
+<h2>corona virus</h2>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+```
+### ../../../app05/coronavirus-cases/src/app/app.component.css 
+```
+.container {
+  padding: 20px;
+}
 ```
 ### ../../../app05/coronavirus-cases/src/app/app-routing.module.ts 
 ```
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CasesComponent } from './cases/cases.component';
+import { CasesDetailsComponent } from './cases-details/cases-details.component';
+import { CasesStatComponent } from './cases-stat/cases-stat.component';
+import { AddCasesComponent } from './add-cases/add-cases.component';
+import { EditCasesComponent } from './edit-cases/edit-cases.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: 'cases',
+    component: CasesComponent,
+    data: { title: 'List of Cases'}
+  },
+  {
+    path: 'cases-details/:id',
+    component: CasesDetailsComponent,
+    data: { title: 'Cases Destails'}
+  },
+  {
+    path: 'cases-stats',
+    component: CasesStatComponent,
+    data: { title: 'Cases Statistics'}
+  },
+  {
+    path: 'add-cases',
+    component: AddCasesComponent,
+    data: { title: 'Add Cases'}
+  },
+  {
+    path: 'edit-cases',
+    component: EditCasesComponent,
+    data: { title: 'Edit Cases'}
+  },
+  {
+    path: '',
+    redirectTo: '/cases',
+    pathMatch: 'full'
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
@@ -225,6 +270,11 @@ export class CasesStatComponent implements OnInit {
   }
 
 }
+
+```
+### ../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.html 
+```
+<p>cases-stat works!</p>
 
 ```
 ### ../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.html 

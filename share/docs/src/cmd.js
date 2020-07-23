@@ -20,6 +20,10 @@ const filesIn = [
     mark: '\n```\n',
   },
   {
+    path: '../../../app05/coronavirus-cases/src/app/app.component.css',
+    mark: '\n```\n',
+  },
+  {
     path: '../../../app05/coronavirus-cases/src/app/app-routing.module.ts',
     mark: '\n```\n',
   },
@@ -57,6 +61,10 @@ const filesIn = [
   },
   {
     path: '../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.ts',
+    mark: '\n```\n',
+  },
+  {
+    path: '../../../app05/coronavirus-cases/src/app/cases-stat/cases-stat.component.html',
     mark: '\n```\n',
   },
   {
