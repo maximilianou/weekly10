@@ -1,4 +1,4 @@
-export class Statitistic {
+export class Statistic {
     _id: any;
     count: number;
 }
