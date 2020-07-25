@@ -1,23 +1,17 @@
-### ../../../app05/Makefile 
+### ../../../app05/coronavirus-cases/src/main.ts 
 ```
-ng1:
-	npm install -g @angular/cli
-	ng new coronavirus-cases
-ng2:
-	cd coronavirus-cases && ng serve --open
-ng3:
-	cd coronavirus-cases && ng g component cases
-	cd coronavirus-cases && ng g component cases-details
-	cd coronavirus-cases && ng g component add-cases
-	cd coronavirus-cases && ng g component edit-cases
-	cd coronavirus-cases && ng g component cases-stat
-ng4:
-	cd coronavirus-cases && ng g service api
-ng5:
-	cd coronavirus-cases && ng add @angular/material
-ng6:
-	cd coronavirus-cases && npm i --save ng2-charts chart.js
-	
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
 
 ```
 ### ../../../app05/coronavirus-cases/src/index.html 
@@ -37,22 +31,6 @@ ng6:
   <app-root></app-root>
 </body>
 </html>
-
-```
-### ../../../app05/coronavirus-cases/src/main.ts 
-```
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
 
 ```
 ### ../../../app05/coronavirus-cases/src/app/app.module.ts 
@@ -280,7 +258,18 @@ export class CasesComponent implements OnInit {
 ### ../../../app05/coronavirus-cases/src/app/add-cases/add-cases.component.ts 
 ```
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiService } from '../api.service';
+import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 @Component({
   selector: 'app-add-cases',
   templateUrl: './add-cases.component.html',
@@ -288,22 +277,177 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddCasesComponent implements OnInit {
 
-  constructor() { }
+  casesForm: FormGroup;
+  name = '';
+  gender = '';
+  age: number = null;
+  address = '';
+  city = '';
+  country = '';
+  status = '';
+  statusList = ['Positive', 'Dead', 'Recovered'];
+  genderList = ['Male', 'Female'];
+  isLoadingResults = false;
+  matcher = new MyErrorStateMatcher();
+
+  constructor(
+    private router: Router, 
+    private api: ApiService, 
+    private formBuilder: FormBuilder) { 
+
+    }
 
   ngOnInit(): void {
+    this.casesForm = this.formBuilder.group({
+      name: [null, Validators.required],
+      gender: [null, Validators.required],
+      age: [null, Validators.required],
+      address: [null, Validators.required],
+      city: [null, Validators.required],
+      country: [null, Validators.required],
+      status: [null, Validators.required],
+    });
   }
-
+  onFormSubmit(){
+    this.isLoadingResults = true;
+    this.api.addCases(this.casesForm.value)
+      .subscribe( (res: any) => {
+        const id = res._id;
+        this.isLoadingResults = false;
+        this.router.navigate(['/cases-details', id]);
+      }, (err: any) => {
+        console.log(err);
+        this.isLoadingResults = false;
+      });
+  
+  }
 }
+
+```
+### ../../../app05/Makefile 
+```
+ng1:
+	npm install -g @angular/cli
+	ng new coronavirus-cases
+ng2:
+	cd coronavirus-cases && ng serve --open
+ng3:
+	cd coronavirus-cases && ng g component cases
+	cd coronavirus-cases && ng g component cases-details
+	cd coronavirus-cases && ng g component add-cases
+	cd coronavirus-cases && ng g component edit-cases
+	cd coronavirus-cases && ng g component cases-stat
+ng4:
+	cd coronavirus-cases && ng g service api
+ng5:
+	cd coronavirus-cases && ng add @angular/material
+ng6:
+	cd coronavirus-cases && npm i --save ng2-charts chart.js
+	
 
 ```
 ### ../../../app05/coronavirus-cases/src/app/add-cases/add-cases.component.html 
 ```
 <p>add-cases works!</p>
-
+<div class="example-container mat-elevation-z8">
+    <h2>Coronavirus Add Cases</h2>
+  <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <div class="button-row">
+      <a mat-flat-button color="primary" [routerLink]="['/cases']"><mat-icon>list</mat-icon></a>
+  </div>
+  <mat-card class="example-card" >
+      <form [formGroup]="casesForm" (click)="onFormSubmit()">
+        <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Name" formControlName="name"
+                [errorStateMatcher]="matcher" />
+                <mat-error>
+                    <span *ngIf="!casesForm.get('name').valid && casesForm.get('name').touched">
+                        Please enter Name</span>
+                </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+                <mat-option *ngFor="let gl of genderList" [value]="gl">
+                    {{gl}}
+                </mat-option>
+            </mat-select>
+            <mat-error>
+                <span *ngIf="!casesForm.get('gender').valid && casesForm.get('gender').touched">
+                    Please choose Gender
+                </span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>Age</mat-label>
+            <input matInput type="number" placeholder="Age" formControlName="age"
+                [errorStateMatcher]="matcher" />
+            <mat-error>
+                <span *ngIf="!casesForm.get('age').valid && casesForm.get('age').touched" >
+                    Please enter Age
+                </span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>Address</mat-label>
+            <input matInput placeholder="Address" formControlName="adress"
+                [errorStateMatcher]="matcher"/>
+            <mat-error>
+                <span *ngIf="!casesForm.get('address').valid && casesForm.get('address').touched" >
+                    Please enter Address
+                </span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label> City </mat-label>
+            <input matInput placeholder="City" formControlName="city"
+                [errorStateMatcher]="matcher" />
+            <mat-error>
+                <span *ngIf="!casesForm.get('city').valid && casesForm.get('city`').touched" >
+                    Please enter City
+                </span>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+                <mat-option *ngFor="let sl of statusList" [value]="sl">
+                    {{sl}}
+                </mat-option>
+            </mat-select>
+            <mat-error>
+                <span *ngIf="!casesForm.get('status').valid && casesForm.get('status').touched">
+                    Please choose Status
+                </span>
+            </mat-error>
+        </mat-form-field>
+        <div class="button-row">
+            <button type="submit" [disabled]="!casesForm.valid" mat-flat-button color="primary">
+                <mat-icon>save</mat-icon>
+            </button>
+        </div>
+      </form>
+  </mat-card>
+</div>
 ```
 ### ../../../app05/coronavirus-cases/src/app/edit-cases/edit-cases.component.ts 
 ```
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from '../api.service';
+import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, 
+               form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && ( control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'app-edit-cases',
@@ -312,9 +456,63 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EditCasesComponent implements OnInit {
 
-  constructor() { }
+  casesForm: FormGroup;
+  _id = '';
+  name = '';
+  gender = '';
+  age: number = null;
+  address = '';
+  city = '';
+  country = '';
+  status = '';
+  statusList = ['Positive', 'Dead', 'Recovered'];
+  genderList = ['Male', 'Female'];
+  isLoadingResults = false;
+  matcher = new MyErrorStateMatcher();
+
+  constructor( private router: Router, private route: ActivatedRoute, 
+    private api: ApiService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.getCasesById(this.route.snapshot.params.id);
+    this.casesForm = this.formBuilder.group({
+      name: [null, Validators.required],
+      gender: [null, Validators.required],
+      age: [null, Validators.required],
+      address: [null, Validators.required],
+      city: [null, Validators.required],
+      country: [null, Validators.required],
+      status: [null, Validators.required],
+    });
+  }
+  getCasesById(id: any){
+    this.api.getCasesById(id).subscribe((data: any) => {
+      this._id = data._id;
+      this.casesForm.setValue({
+        name: data.name,
+        gender: data.gender,
+        age: data.age,
+        address: data.address,
+        city: data.city,
+        country: data.country,
+        status: data.status,
+      });
+    });
+  }
+  onFormSubmit(){
+    this.isLoadingResults = true;
+    this.api.updateCases(this._id, this.casesForm.value) 
+    .subscribe((res: any) => {
+      const id = res._id;
+      this.isLoadingResults = false;
+      this.router.navigate(['/cases-details', id]);
+    }, (err: any) => {
+      console.log(err);
+      this.isLoadingResults = false;
+    });
+  }
+  casesDetails(){
+    this.router.navigate(['/cases-details', this._id]);
   }
 
 }
@@ -323,6 +521,102 @@ export class EditCasesComponent implements OnInit {
 ### ../../../app05/coronavirus-cases/src/app/edit-cases/edit-cases.component.html 
 ```
 <p>edit-cases works!</p>
+<div class="example-container mat-elevation-z8">
+    <h2>Coronavirus Edit Cases</h2>
+    <div class="example-loading-shade" *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <div class="button-row">
+        <a mat-flat-button color="primary" (click)="casesDetails()">
+            <mat-icon>info</mat-icon>
+        </a>
+    </div>
+    <mat-card class="example-card">
+        <form [formGroup]="casesForm" (ngSubmit)="onFormSubmit()">
+            <mat-form-field class="example-full-width">
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Name" formControlName="name"
+                [errorStateMatcher]="matcher" />
+                <mat-error>
+                    <span *ngIf="!casesForm.get('name').valid && casesForm.get('name').touched">
+                        Please enter Name
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Gender</mat-label>
+                <mat-select  formControlName="gender">
+                    <mat-option *ngFor="let gl of genderList" [value]="gl">
+                        {{gl}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>
+                    <span *ngIf="!casesForm.get('gender').valid && casesForm.get('gender').touched">
+                        Please enter Gender
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Age</mat-label>
+                <input matInput placeholder="Age" formControlName="age"
+                [errorStateMatcher]="matcher" />
+                <mat-error>
+                    <span *ngIf="!casesForm.get('age').valid && casesForm.get('age').touched">
+                        Please enter Age
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Address</mat-label>
+                <input matInput placeholder="Address" formControlName="address"
+                [errorStateMatcher]="matcher" />
+                <mat-error>
+                    <span *ngIf="!casesForm.get('address').valid && casesForm.get('address').touched">
+                        Please enter Address
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>City</mat-label>
+                <input matInput placeholder="City" formControlName="city"
+                [errorStateMatcher]="matcher" />
+                <mat-error>
+                    <span *ngIf="!casesForm.get('city').valid && casesForm.get('city').touched">
+                        Please enter City
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Country</mat-label>
+                <input matInput placeholder="Country" formControlName="country"
+                [errorStateMatcher]="matcher" />
+                <mat-error>
+                    <span *ngIf="!casesForm.get('country').valid && casesForm.get('country').touched">
+                        Please enter Country
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <mat-label>Status</mat-label>
+                <mat-select  formControlName="status">
+                    <mat-option *ngFor="let sl of statusList" [value]="sl">
+                        {{sl}}
+                    </mat-option>
+                </mat-select>
+                <mat-error>
+                    <span *ngIf="!casesForm.get('status').valid && casesForm.get('status').touched">
+                        Please enter Status
+                    </span>
+                </mat-error>
+            </mat-form-field>
+            <div class="button-row">
+                <button type="submit" [disabled]="!casesForm.valid" mat-flat-button color="primary">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </div>
+        </form>
+    </mat-card>
+</div>
 
 ```
 ### ../../../app05/coronavirus-cases/src/app/cases-details/cases-details.component.ts 
