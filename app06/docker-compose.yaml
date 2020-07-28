@@ -1,0 +1,78 @@
+version: '3.7'
+services:
+
+  back: 
+    image: node:alpine
+    volumes:
+      - ./coronavirus-restapi/.:/srv
+    working_dir: /srv
+    command: npm run start
+    ports: 
+      - 4662:3000
+    environment:
+      - NODE_ENV=development
+    networks:
+      - net_intranet
+
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - net_intranet
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 4664:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    networks:
+      - net_intranet
+
+#  db:
+#    image: postgres:alpine
+#    environment:
+#      POSTGRES_PASSWORD: example
+#    ports: 
+#      - 2160:5432
+#    networks:
+#      - net_intranet
+
+#  adminer:
+#    image: adminer
+#    ports:
+#      - 2150:8080
+#    networks:
+#      - net_intranet
+
+  front: 
+    build:
+      context: ./coronavirus-cases/.
+      dockerfile: Dockerfile
+    ports:
+      - "4201:4201"
+    container_name: corona-cases
+    volumes:
+      - ./coronavirus-cases/.:/home/node/app
+      - ./coronavirus-cases/node_modules:/home/node/app/node_modules
+#    image: node:alpine
+#    volumes:
+#      - ./coronavirus-cases/.:/srv
+#    working_dir: /srv
+#    command: npm run start;
+#    ports: 
+#      - 4660:4200
+#    environment:
+#      - NODE_ENV=development
+#    networks:
+#      - net_intranet
+
+      
+networks:
+  net_intranet: {}
